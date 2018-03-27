@@ -36,13 +36,11 @@ var lines_qrc_usb='/lines.qrc';
 var lines_qrc_blind='/dev_blind/vsh/resource/qgl/lines.qrc';
 var lines_qrc_fsize=0x202B0;
 
-var dummy1_usb='/yourchannels.png';
-var dummy1_blind='/tmp/yourchannels.png';
-var dummy1_fsize=0xB28C;
+var dummy1_usb='/dummy1.bin';
+var dummy1_blind='/tmp/dummy1.bin';
 
-var dummy2_usb='/yourchannels.png';
-var dummy2_blind='/tmp/yourchannels.png';
-var dummy2_fsize=0xB28C;
+var dummy2_usb='/dummy1.bin';
+var dummy2_blind='/tmp/dummy2.bin';
 
 var explore_category_psn_buf_addr=0x8B200000;
 var explore_pluginrco3_buf_addr=0x8B600000;
@@ -54,16 +52,32 @@ var dummy2_buf_addr=0x8BC00000;
 var explore_category_psn_usb_addr=0;
 var explore_category_psn_blind_addr=0;
 var explore_category_psn_fsize_addr=0;
+var explore_category_psn_usb_readlen_addr=0;
+var explore_category_psn_blind_addr=0;
+var explore_category_psn_blindfd_addr=0;
+var explore_category_psn_blind_writelen_addr=0;
 
 var explore_pluginrco3_usb_addr=0;
 var explore_pluginrco3_blind_addr=0;
 var explore_pluginrco3_fsize_addr=0;
+var explore_pluginrco3_usb_readlen_addr=0;
+var explore_pluginrco3_blind_addr=0;
+var explore_pluginrco3_blindfd_addr=0;
+var explore_pluginrco3_blind_writelen_addr=0;
 
 var yourchannels_usb_addr=0;
 var yourchannels_blind_addr=0;
+var yourchannels_usb_readlen_addr=0;
+var yourchannels_blind_addr=0;
+var yourchannels_blindfd_addr=0;
+var yourchannels_blind_writelen_addr=0;
 
 var lines_qrc_usb_addr=0;
 var lines_qrc_blind_addr=0;
+var lines_qrc_usb_readlen_addr=0;
+var lines_qrc_blind_addr=0;
+var lines_qrc_blindfd_addr=0;
+var lines_qrc_blind_writelen_addr=0;
 
 var dummy1_usb_addr=0;
 var dummy1_usbfd_addr=0;
@@ -1417,6 +1431,53 @@ function fill_by_16bytes(nbytes,hex_val)
 	var stemp='';var iterator=0;var tmp=hexh2bin(hex_val);
 	while(iterator<nbytes/16){stemp+=tmp.repeat(8);iterator++;}
 	return stemp;
+}
+
+function make_dummy_null_padding1()
+{
+	return dummy1_usb_addr+getPath(dummy1_usb).convertedSize()
+	+dummy1_usbfd_addr+word_size
+	+dummy1_usb_readlen_addr+dword_size
+	+dummy1_blind_addr+dummy1_blind.convertedSize()
+	+dummy1_blindfd_addr+word_size
+	+dummy1_blind_writelen_addr+dword_size;
+}
+
+function make_dummy_null_padding2()
+{
+	return dummy1_usb_addr+getPath(dummy1_usb).convertedSize()
+	+dummy1_usbfd_addr+word_size
+	+dummy1_usb_readlen_addr+dword_size
+	+dummy1_blind_addr+dummy1_blind.convertedSize()
+	+dummy1_blindfd_addr+word_size
+	+dummy1_blind_writelen_addr+dword_size
+	+dummy2_usb_addr+getPath(dummy2_usb).convertedSize()
+	+dummy2_usbfd_addr+word_size
+	+dummy2_usb_readlen_addr+dword_size
+	+dummy2_blind_addr+dummy2_blind.convertedSize()
+	+dummy2_blindfd_addr+word_size;
+}
+
+function make_dummy_xtra1()
+{
+	return fill_by_4bytes(0xC,dbyte00)
+	+getPath(dummy1_usb).convert()
+	+fill_by_4bytes(0xC,dbyte00)
+	+dummy1_blind.convert()
+	+fill_by_4bytes(0xC,dbyte00);
+}
+
+function make_dummy_xtra2()
+{
+	return fill_by_4bytes(0xC,dbyte00)
+	+getPath(dummy1_usb).convert()
+	+fill_by_4bytes(0xC,dbyte00)
+	+dummy1_blind.convert()
+	+fill_by_4bytes(0xC,dbyte00)
+	+getPath(dummy2_usb).convert()
+	+fill_by_4bytes(0xC,dbyte00)
+	+dummy2_blind.convert()
+	+fill_by_4bytes(0xC,dbyte00);
 }
 //########################## End ROP Framework functions by bguerville(under development) #########################
 function ps3chk(){

