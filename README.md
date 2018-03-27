@@ -12,7 +12,7 @@ How To Use:
 * Place lines.qrc on USB flash drive or select one of the internal HDD options
 * Navigate to ps3xploit.com or use local files above and a webserver
 * Run the exploit from page and allow console to reboot fully
-* Done! Enjoy your new boot logo and sounds :D
+* Done! Enjoy your new XMB Wave :D
 
 
 Forum:
